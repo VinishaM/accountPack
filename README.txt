@@ -1,3 +1,3 @@
 Account Pack 
 
-Web app to keep track of personal finaces
+Web app to keep track of personal finances
