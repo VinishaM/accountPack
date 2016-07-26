@@ -1,0 +1,70 @@
+<?php
+//If form was submitted, record new transaction and display success message
+if (isset($_POST['submit'])) {
+    //connect to database mydb
+    $server =mysqli_connect('localhost','root','password', 'mydb');
+    
+    //check connection
+    if (mysqli_connect_errno()) {
+        die("Connection failed. The following error message was recieved: " . mysqli_connect_error() ." Please try again.");
+    } 
+    else {
+        //returns single piece of data from the given database for the selected column. 
+        function grabInfo($name, $db, $select) {
+            $query= "SELECT " .$select. " FROM mydb.accounts WHERE accountName= '" .$name. "' ";
+            $result= mysqli_query($db, $query);
+            //check query execution
+            if (!$result) {
+                //add given accounts to the accounts table
+                die("Database query failed.");
+            } 
+            $row= mysqli_fetch_row($result);
+            return $row[0];
+        }
+        
+        //changes the balance recorded in to and from accounts
+        function changeBals($toAcc, $fromAcc, $amt , $db) {
+            //assign new balances
+            $newBalTo= grabInfo($toAcc, $db,'accountBal') + $amt;
+            $newBalFrom= grabInfo($fromAcc, $db, 'accountBal') - $amt;
+            //Update current balances 
+            $queryTo= "UPDATE mydb.accounts SET accountBal=" .$newBalTo. " WHERE accountName= '" .$toAcc. "' ";
+            $queryFrom= "UPDATE mydb.accounts SET accountBal= " .$newBalFrom. " WHERE accountName= '" .$fromAcc. "'";
+            $resultTo= mysqli_query($db, $queryTo);
+            $resultFrom= mysqli_query($db, $queryFrom);
+            //return error message if needed
+            if (!$resultTo || !$resultFrom) {
+                die("An error occured in updating account balance. Please try again.");
+            }
+        }
+    
+        //Assign $_POST values, using Real_escape on atring inputs in case they contain apostropies.
+        $fDate= $_POST['formDate'];
+        $fAmount= $_POST['formAmount'];
+        $fDetail= $_POST['formDetail'];
+        $fAccToClean= mysqli_real_escape_string($server,$_POST['formToAcc']);
+        $fAccFromClean= mysqli_real_escape_string($server,$_POST['formFromAcc']); 
+        
+        //Convert name accounts into their id numbers from the accouts table. Real_escape input in case it contains apostropies.
+        $fToAcc= grabInfo($fAccToClean, $server, 'idaccounts');
+        $fFromAcc= grabInfo($fAccFromClean, $server, 'idaccounts');
+
+        //Add entry to transactions table 
+        $queryAddTrans = "INSERT INTO mydb.transactions(transDate, amount, toAccount, fromAccount, details) VALUES ( '" .$fDate. "' , '" .$fAmount. "' , '" .$fToAcc. "', '" .$fFromAcc. "' , '" .$fDetail. "' )";
+        $t= mysqli_query($server, $queryAddTrans); 
+        
+        //Update balances in the account table
+        changeBals($fAccToClean,$fAccFromClean, $fAmount, $server);
+        
+        // Display error or success message
+        if ($t) {
+            $message="Success: Transaction Recorded!";
+        } else { $message= "There was an error in recording your transaction. Please try again.";}
+    }
+}
+
+//if no form was submitted, do not display message
+else {
+    $message="";
+}
+?>

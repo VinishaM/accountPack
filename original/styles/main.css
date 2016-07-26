@@ -1,0 +1,128 @@
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+html, body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+    height:100%;
+}
+
+#content {
+    overflow: auto;
+    height: 100%;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+.form {
+    position: absolute;
+    top: 10%; 
+    left: 10%;
+    width: 70%;
+    height: 70%;
+    background-color: #daf650;
+    border-radius: 20px;
+    z-index: 11; 
+    padding: 3%;
+    color: #246746;
+}/*
+.form a {
+    float: right;
+    text-align: center;
+    border-style: solid;
+    border-color: #246746;
+    margin:0;
+    padding: 0 5px;
+    font-size: 20px;
+    border-radius: 8px;
+}
+.form a:hover {
+    background-color: #c4dd48;
+}
+
+.form h1 {
+    text-align: center;
+}
+.form input:not(#submit) {
+    margin-top: 1%;
+    margin-left: 2em;
+    padding: .5%;
+    background: 
+        linear-gradient( 
+            rgba(0, 0, 0, 0.15),
+            rgba(255, 255, 255, 0.1)            
+        );
+    border-radius: 3px;
+    border: none;
+    width: 50%;
+    border-bottom: 2px solid #00aba9;
+}*/
+ul {
+    padding: 1%;
+    margin:0;
+    text-align: right;
+    background-color: #00aba9;
+  
+}
+
+#account, #trans{
+    margin: 0% 1%;
+    padding: 1.4%;
+    display: inline-block;
+    border-radius: 6px;
+    background-color:  #daf650;
+    color: #246746;
+}
+.grid a {
+     text-decoration: none;
+}
+body { background:rgb(30,30,40); }
+form { max-width:420px; margin:50px auto; }
+
+.feedback-input {
+  color:white;
+  font-weight:500;
+  font-size: 18px;
+  border-radius: 5px;
+  line-height: 22px;
+  background-color: transparent;
+  border:2px solid #CC6666;
+  transition: all 0.3s;
+  padding: 13px;
+  margin-bottom: 15px;
+  width:100%;
+  box-sizing: border-box;
+  outline:0;
+}
+
+.feedback-input:focus { border:2px solid #CC4949; }
+
+textarea {
+  height: 150px;
+  line-height: 150%;
+  resize:vertical;
+}
+
+[type="submit"] {
+  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  width: 100%;
+  background:#CC6666;
+  border-radius:5px;
+  border:0;
+  cursor:pointer;
+  color:white;
+  font-size:24px;
+  padding-top:10px;
+  padding-bottom:10px;
+  transition: all 0.3s;
+  margin-top:-4px;
+  font-weight:700;
+}
+[type="submit"]:hover { background:#CC4949; }
