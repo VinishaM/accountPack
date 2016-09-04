@@ -38,8 +38,8 @@ app.get('/', function (req, res) {
 
 //validate login and redirect as needed.
 app.post('/login', function(req, res) {
-	var username = req.body.user;
-    var password = req.body.pass;
+	var username = req.body.name;
+    var password = req.body.password;
 
     //verify login
 	connection.query("SELECT userid FROM users WHERE username='" + username + "' AND password='" + password + "'", function(err, rows, fields) {
@@ -67,18 +67,43 @@ app.post('/login', function(req, res) {
 
 //create new user and redirect to dashboard 
 app.post('/register', function(req, res){
-	var username = req.body.user;
-    var password = req.body.pass;
+	var first = req.body.Fname;
+	var last = req.body.Lname;
+	var username = req.body.username;
+    var password = req.body.password;
     var email = req.body.email;
 
+    console.log(first);
+    console.log(last);
     console.log(username);
     console.log(password);
     console.log(email);
 
     //verify the username does not exist
-	connection.query('SELECT userId FROM users', function(err, rows, fields) {
-	  	if (err) throw err;
-	  	console.log('The solution is: ', rows[0].solution);
+	connection.query("SELECT userid FROM users WHERE email='" + email + "'", function(err, rows, fields) {
+		console.log(rows);
+		if (!err) {
+			//if not, create a new user 
+			if (rows[0] == undefined) {
+				connection.query("INSERT INTO users(email, username, password, firstName, lastName) VALUES('" + email+ "','" + username+ "','" + password + "','" + first + "','" + last + "')", function(err, rows, fields) {
+					if (!err) {
+						console.log('New user created');
+						//set the new userid as the session variable and redirect to homepage
+						connection.query("SELECT userid from users WHERE email='" + email + "'", function(err, rows, feilds) {
+							if (!err) {
+								//set session to userId
+		  						req.session.userId = rows[0].userid;
+		  						res.send({redirect: true});
+							}	
+						});	
+					}
+				});
+			} else {
+				res.send({result : 'An account with this email already exists.'});
+			}
+		} else {
+			res.send({result : 'An error occured. Please try again.'});
+		}
 	});
 });
 

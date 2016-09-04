@@ -19,10 +19,9 @@ app.controller('loginForms', function($scope, $http){
             $http({
               method: 'POST',
               url: '/login',
-              data: {user: $scope.User.name, pass: $scope.User.password}
+              data: $scope.User
             }).then(function successCallback(response) {
-                // this callback will be called asynchronously
-                // when the response is available
+                // this callback will be called asynchronously when the response is available
                 if (response.data.result != undefined) {
                     $scope.message = response.data.result;
                 } else if (response.data.redirect == true) {
@@ -40,6 +39,7 @@ app.controller('loginForms', function($scope, $http){
     }
     
     $scope.checkRegister= function(){
+        console.log($scope.newUser);
         if (angular.equals({}, $scope.newUser)) {
             $scope.message = 'Enter a valid name, password and email to register';
         } else {
@@ -47,15 +47,18 @@ app.controller('loginForms', function($scope, $http){
             $http({
               method: 'POST',
               url: '/register',
-              data: {user: $scope.newUser.name, pass: $scope.newUser.password, email: $scope.newUser.email}
+              data: $scope.newUser
             }).then(function successCallback(response) {
-                // this callback will be called asynchronously
-                // when the response is available
+                // this callback will be called asynchronously when the response is available
                 console.log('registered');
                 //$scope.validate = response.data.result
                 if (response.data.result != undefined) {
                     $scope.message = response.data.result;
-                } 
+                } else if (response.data.redirect == true) {
+                    window.location = '/'
+                } else {
+                  $scope.message = "Login Failed, please try again."
+                }
 
               }, function errorCallback(response) {
                 // called asynchronously if an error occurs

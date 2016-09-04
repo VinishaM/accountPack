@@ -42,7 +42,9 @@
         <div class="login-page">
           <div class="form" ng-controller='loginForms'>
             <form class="register-form" ng-show='!registered'>
-              <input type="text" placeholder="name" ng-model='newUser.name'/>
+              <input type="text" placeholder="First Name" ng-model='newUser.Fname'/>
+              <input type="text" placeholder="Last Name" ng-model='newUser.Lname'/>
+              <input type="text" placeholder="username" ng-model='newUser.username'/>
               <input type="password" placeholder="password"  ng-model='newUser.password'/>
               <input type="text" placeholder="email address"  ng-model='newUser.email'/>
               <button ng-click='checkRegister()'>create</button>
