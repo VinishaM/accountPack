@@ -25,9 +25,9 @@ app.controller('loginForms', function($scope, $http){
                 if (response.data.result != undefined) {
                     $scope.message = response.data.result;
                 } else if (response.data.redirect == true) {
-                    window.location = '/'
+                    window.location = '/';
                 } else {
-                  $scope.message = "Login Failed, please try again."
+                  $scope.message = "Login Failed, please try again.";
                 }
 
               }, function errorCallback(response) {

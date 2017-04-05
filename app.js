@@ -29,7 +29,7 @@ connection.connect();
 
 //direct to login screen or dashboard if the user is logged in 
 app.get('/', function (req, res) {
-	if (req.session.userId) {
+	if (req.session.userId != undefined) {
 		res.sendFile('dashboard.html', {root: __dirname + '/public/'});
 	} else {
 		res.sendFile('login.html', {root: __dirname + '/public/'});
@@ -42,17 +42,17 @@ app.post('/login', function(req, res) {
     var password = req.body.password;
 
     //verify login
-	connection.query("SELECT userid FROM users WHERE username='" + username + "' AND password='" + password + "'", function(err, rows, fields) {
+	connection.query("SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'", function(err, rows, fields) {
 		console.log(rows);
 		if (!err) {
 		  	if (rows[0] != undefined) {
 		  		//set session to userId
 		  		req.session.userId = rows[0].userid;
-		  		console.log(rows[0].userid);
+		  		req.session.firstName = rows[0].firstName;
 		  		if (req.session.userId != undefined) {
 		  			//tell browser to redirect to home to display dashboard
 		  			console.log('Access Granted');
-		  			res.send({redirect: true});
+		  			res.send({redirect: true, user: {name: rows[0].firstName, id: rows[0].userid}});
 		  		} else {
 		  			//log out old user and log in new one
 		  		}
@@ -80,7 +80,7 @@ app.post('/register', function(req, res){
     console.log(email);
 
     //verify the username does not exist
-	connection.query("SELECT userid FROM users WHERE email='" + email + "'", function(err, rows, fields) {
+	connection.query("SELECT * FROM users WHERE email='" + email + "'", function(err, rows, fields) {
 		console.log(rows);
 		if (!err) {
 			//if not, create a new user 
@@ -88,12 +88,14 @@ app.post('/register', function(req, res){
 				connection.query("INSERT INTO users(email, username, password, firstName, lastName) VALUES('" + email+ "','" + username+ "','" + password + "','" + first + "','" + last + "')", function(err, rows, fields) {
 					if (!err) {
 						console.log('New user created');
-						//set the new userid as the session variable and redirect to homepage
-						connection.query("SELECT userid from users WHERE email='" + email + "'", function(err, rows, feilds) {
+						//set the new userid as the session variable and redirect to homepageC
+						connection.query("SELECT * from users WHERE email='" + email + "'", function(err, rows, feilds) {
 							if (!err) {
 								//set session to userId
+								console.log(req.session);
 		  						req.session.userId = rows[0].userid;
-		  						res.send({redirect: true});
+		  						req.session.firstName = rows[0].firstName;
+		  						res.send({redirect: true, user: {name: rows[0].firstName, id: rows[0].userid}});
 							}	
 						});	
 					}
@@ -107,14 +109,28 @@ app.post('/register', function(req, res){
 	});
 });
 
+//check if user is logged in
+app.all("/checkUser", function(req, res) {
+	if (req.session.userId != undefined) {
+		res.send({user: {name: rows[0].firstName, id: rows[0].userid}});
+	} else {
+		res.send({result : "no user defined"});
+	}
+});
+
 //take user information to create dashboard 
 app.post('/account', function(req, res) {
 	//res.sendFile('dashboard.html', {root: __dirname + '/public/'}
 });
 
 app.get('/logout', function(req, res) {
-	//verify and add user
-	connection.end();
+	//log user out
+	if (req.session.userId != undefined) {
+		req.session.destroy();
+		console.log("logging out");
+		connection.end();
+		res.redirect('/');
+	} 
 });
 
 //initialize app
