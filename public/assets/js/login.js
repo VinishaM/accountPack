@@ -1,4 +1,4 @@
-var app = angular.module('a', []);
+var app = angular.module('login', []);
 
 app.controller('loginForms', function($scope, $http){
     $scope.registered = true;

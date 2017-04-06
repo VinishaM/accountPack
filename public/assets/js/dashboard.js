@@ -1,30 +1,21 @@
-var app = angular.module('a', []);
+var app = angular.module('dash', []);
 
-app.controller('dashboard', function($scope, $http){
-    $scope.registered = true;
-    
-    $scope.newUser={};
-    
+app.controller('dashboard', function($scope, $http){    
     $scope.User = {};
-    
-    $scope.message = "";
 
-    $scope.validate = '';
-
-    $scope.logout = function() {
+    $scope.getUser = function() {
         console.log("here");
         $http({
-            method: 'POST',
-            url: '/logout',
-            data: {}
+            method: 'GET',
+            url: '/checkUser'
         }).then(function successCallback(response) {
               //$scope.validate = response.data.result
-              console.log("no error");
-              if (response.data.result != undefined) {
-                  window.location = '/'
+              if (response.data.name != undefined) {
+                  console.log(response.data);
+                  $scope.User = response.data;
               }
           }, function errorCallback(response) {
-              console.log("error in logout");
+              console.log("no user exists");
           });
     } 
     

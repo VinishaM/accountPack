@@ -40,7 +40,6 @@ app.get('/', function (req, res) {
 app.post('/login', function(req, res) {
 	var username = req.body.name;
     var password = req.body.password;
-
     //verify login
 	connection.query("SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'", function(err, rows, fields) {
 		console.log(rows);
@@ -80,6 +79,7 @@ app.post('/register', function(req, res){
     console.log(email);
 
     //verify the username does not exist
+    //connection.connect();
 	connection.query("SELECT * FROM users WHERE email='" + email + "'", function(err, rows, fields) {
 		console.log(rows);
 		if (!err) {
@@ -110,9 +110,9 @@ app.post('/register', function(req, res){
 });
 
 //check if user is logged in
-app.all("/checkUser", function(req, res) {
+app.get("/checkUser", function(req, res) {
 	if (req.session.userId != undefined) {
-		res.send({user: {name: rows[0].firstName, id: rows[0].userid}});
+		res.send({name: req.session.firstName, id: req.session.userid});
 	} else {
 		res.send({result : "no user defined"});
 	}
@@ -126,9 +126,8 @@ app.post('/account', function(req, res) {
 app.get('/logout', function(req, res) {
 	//log user out
 	if (req.session.userId != undefined) {
-		req.session.destroy();
 		console.log("logging out");
-		connection.end();
+		req.session.destroy();
 		res.redirect('/');
 	} 
 });
